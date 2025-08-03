@@ -27,11 +27,12 @@ describe('auth handlers', () => {
 
   describe('login', () => {
     it('should authenticate valid user credentials', async () => {
-      // Create test user
+      // Create test user with properly hashed password
+      const hashedPassword = await Bun.password.hash('password');
       await db.insert(usersTable).values({
         username: testUser.username,
         email: testUser.email,
-        password_hash: 'hashed_password',
+        password_hash: hashedPassword,
         full_name: testUser.full_name,
         role: testUser.role,
         is_active: true
@@ -56,11 +57,12 @@ describe('auth handlers', () => {
     });
 
     it('should reject invalid username', async () => {
-      // Create test user
+      // Create test user with properly hashed password
+      const hashedPassword = await Bun.password.hash('password');
       await db.insert(usersTable).values({
         username: testUser.username,
         email: testUser.email,
-        password_hash: 'hashed_password',
+        password_hash: hashedPassword,
         full_name: testUser.full_name,
         role: testUser.role,
         is_active: true
@@ -75,11 +77,12 @@ describe('auth handlers', () => {
     });
 
     it('should reject invalid password', async () => {
-      // Create test user
+      // Create test user with properly hashed password
+      const hashedPassword = await Bun.password.hash('password');
       await db.insert(usersTable).values({
         username: testUser.username,
         email: testUser.email,
-        password_hash: 'hashed_password',
+        password_hash: hashedPassword,
         full_name: testUser.full_name,
         role: testUser.role,
         is_active: true
@@ -94,11 +97,12 @@ describe('auth handlers', () => {
     });
 
     it('should reject deactivated user', async () => {
-      // Create deactivated test user
+      // Create deactivated test user with properly hashed password (not that it matters for this test)
+      const hashedPassword = await Bun.password.hash('password');
       await db.insert(usersTable).values({
         username: testUser.username,
         email: testUser.email,
-        password_hash: 'hashed_password',
+        password_hash: hashedPassword,
         full_name: testUser.full_name,
         role: testUser.role,
         is_active: false
@@ -108,11 +112,12 @@ describe('auth handlers', () => {
     });
 
     it('should generate valid JWT token', async () => {
-      // Create test user
+      // Create test user with properly hashed password
+      const hashedPassword = await Bun.password.hash('password');
       await db.insert(usersTable).values({
         username: testUser.username,
         email: testUser.email,
-        password_hash: 'hashed_password',
+        password_hash: hashedPassword,
         full_name: testUser.full_name,
         role: testUser.role,
         is_active: true
@@ -128,11 +133,12 @@ describe('auth handlers', () => {
 
   describe('getCurrentUser', () => {
     it('should return user data for valid token', async () => {
-      // Create test user
+      // Create test user with properly hashed password
+      const hashedPassword = await Bun.password.hash('password');
       const userResult = await db.insert(usersTable).values({
         username: testUser.username,
         email: testUser.email,
-        password_hash: 'hashed_password',
+        password_hash: hashedPassword,
         full_name: testUser.full_name,
         role: testUser.role,
         is_active: true
@@ -174,11 +180,12 @@ describe('auth handlers', () => {
     });
 
     it('should return null for deactivated user', async () => {
-      // Create test user
+      // Create test user with properly hashed password
+      const hashedPassword = await Bun.password.hash('password');
       await db.insert(usersTable).values({
         username: testUser.username,
         email: testUser.email,
-        password_hash: 'hashed_password',
+        password_hash: hashedPassword,
         full_name: testUser.full_name,
         role: testUser.role,
         is_active: true
@@ -200,11 +207,12 @@ describe('auth handlers', () => {
     });
 
     it('should return null for non-existent user', async () => {
-      // Create test user
+      // Create test user with properly hashed password
+      const hashedPassword = await Bun.password.hash('password');
       const userResult = await db.insert(usersTable).values({
         username: testUser.username,
         email: testUser.email,
-        password_hash: 'hashed_password',
+        password_hash: hashedPassword,
         full_name: testUser.full_name,
         role: testUser.role,
         is_active: true

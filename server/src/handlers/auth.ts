@@ -62,10 +62,9 @@ export async function login(input: LoginInput): Promise<{ user: User; token: str
       throw new Error('Account is deactivated');
     }
 
-    // In a real application, you would verify the password hash
-    // For this implementation, we'll do a simple comparison
-    // In production, use bcrypt.compare(input.password, user.password_hash)
-    if (input.password !== 'password') {
+    // Verify password using Bun's password verification
+    const isPasswordValid = await Bun.password.verify(input.password, user.password_hash);
+    if (!isPasswordValid) {
       throw new Error('Invalid username or password');
     }
 
