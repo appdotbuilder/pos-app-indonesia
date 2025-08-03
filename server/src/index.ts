@@ -6,6 +6,11 @@ import cors from 'cors';
 import superjson from 'superjson';
 import { z } from 'zod';
 
+// Configure database URL if not set in environment
+if (!process.env['APP_DATABASE_URL']) {
+  process.env['APP_DATABASE_URL'] = 'postgresql://neondb_owner:npg_4wctAheTU2xf@ep-polished-rain-ae23givt-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
+}
+
 // Import schemas
 import {
   createUserInputSchema,
