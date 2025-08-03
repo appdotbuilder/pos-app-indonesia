@@ -1,39 +1,79 @@
 
+import { db } from '../db';
+import { usersTable } from '../db/schema';
 import { type CreateUserInput, type User } from '../schema';
+import { eq } from 'drizzle-orm';
 
 export async function createUser(input: CreateUserInput): Promise<User> {
-  // This is a placeholder declaration! Real code should be implemented here.
-  // The goal of this handler is to create a new user with hashed password and store in database.
-  // Should hash password, validate unique username/email, and insert into users table.
-  return Promise.resolve({
-    id: 1,
-    username: input.username,
-    email: input.email,
-    password_hash: 'hashed_password_placeholder',
-    full_name: input.full_name,
-    role: input.role,
-    is_active: true,
-    created_at: new Date(),
-    updated_at: new Date()
-  });
+  try {
+    // Hash the password (simple hash for demo - in production use bcrypt)
+    const password_hash = await Bun.password.hash(input.password);
+
+    // Insert user record
+    const result = await db.insert(usersTable)
+      .values({
+        username: input.username,
+        email: input.email,
+        password_hash,
+        full_name: input.full_name,
+        role: input.role
+      })
+      .returning()
+      .execute();
+
+    return result[0];
+  } catch (error) {
+    console.error('User creation failed:', error);
+    throw error;
+  }
 }
 
 export async function getUsers(): Promise<User[]> {
-  // This is a placeholder declaration! Real code should be implemented here.
-  // The goal of this handler is to fetch all active users from the database.
-  // Should retrieve users with their roles for user management.
-  return Promise.resolve([]);
+  try {
+    const results = await db.select()
+      .from(usersTable)
+      .where(eq(usersTable.is_active, true))
+      .execute();
+
+    return results;
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+    throw error;
+  }
 }
 
 export async function getUserById(id: number): Promise<User | null> {
-  // This is a placeholder declaration! Real code should be implemented here.
-  // The goal of this handler is to fetch a specific user by ID from the database.
-  return Promise.resolve(null);
+  try {
+    const results = await db.select()
+      .from(usersTable)
+      .where(eq(usersTable.id, id))
+      .execute();
+
+    return results.length > 0 ? results[0] : null;
+  } catch (error) {
+    console.error('Failed to fetch user by ID:', error);
+    throw error;
+  }
 }
 
 export async function updateUserStatus(id: number, isActive: boolean): Promise<User> {
-  // This is a placeholder declaration! Real code should be implemented here.
-  // The goal of this handler is to activate/deactivate a user account.
-  // Should update is_active field and updated_at timestamp.
-  return Promise.resolve({} as User);
+  try {
+    const result = await db.update(usersTable)
+      .set({ 
+        is_active: isActive,
+        updated_at: new Date()
+      })
+      .where(eq(usersTable.id, id))
+      .returning()
+      .execute();
+
+    if (result.length === 0) {
+      throw new Error(`User with id ${id} not found`);
+    }
+
+    return result[0];
+  } catch (error) {
+    console.error('Failed to update user status:', error);
+    throw error;
+  }
 }
