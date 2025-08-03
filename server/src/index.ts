@@ -26,6 +26,7 @@ import {
 // Import handlers
 import { login, getCurrentUser } from './handlers/auth';
 import { createUser, getUsers, getUserById, updateUserStatus } from './handlers/users';
+import { seedInitialUsers } from './handlers/seed';
 import { createCustomer, getCustomers, getCustomerById, getCustomerPurchaseHistory } from './handlers/customers';
 import { 
   createProduct, 
@@ -183,6 +184,10 @@ const appRouter = router({
 
   getDashboardStats: publicProcedure
     .query(() => getDashboardStats()),
+
+  // Seeding (for initial setup/development)
+  seedDatabase: publicProcedure
+    .mutation(() => seedInitialUsers()),
 });
 
 export type AppRouter = typeof appRouter;
